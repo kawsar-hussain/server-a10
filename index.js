@@ -58,6 +58,20 @@ async function run() {
       res.send(result);
     });
 
+    // update data
+    app.put("/update/:id", async (req, res) => {
+      const data = req.body;
+      const id = req.params;
+      const query = { _id: new ObjectId(id) };
+
+      const updateServices = {
+        $set: data,
+      };
+
+      const result = await productList.updateOne(query, updateServices);
+      res.send(result);
+    });
+
     // get product data by category
     app.get("/filtered-category/:category", async (req, res) => {
       try {
