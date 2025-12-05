@@ -50,6 +50,14 @@ async function run() {
       res.send(result);
     });
 
+    // get data by email
+    app.get("/my-products", async (req, res) => {
+      const { email } = req.query;
+      const query = { email: email };
+      const result = await productList.find(query).toArray();
+      res.send(result);
+    });
+
     // get product data by category
     app.get("/filtered-category/:category", async (req, res) => {
       try {
