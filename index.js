@@ -72,6 +72,14 @@ async function run() {
       res.send(result);
     });
 
+    // delete data
+    app.delete("/delete/:id", async (req, res) => {
+      const id = req.params;
+      const query = { _id: new ObjectId(id) };
+      const result = await productList.deleteOne(query);
+      res.send(result);
+    });
+
     // get product data by category
     app.get("/filtered-category/:category", async (req, res) => {
       try {
