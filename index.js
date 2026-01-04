@@ -23,8 +23,35 @@ async function run() {
     // await client.connect();
 
     const database = client.db("PawMart");
+    const userCollections = database.collection("users");
     const productList = database.collection("productList");
+    const pets = database.collection("pets");
     const orderCollections = database.collection("orderedData");
+
+    // post user data
+    app.post("/users", async (req, res) => {
+      const userInfo = req.body;
+      userInfo.createdAt = new Date();
+
+      const result = await userCollections.insertOne(userInfo);
+      res.send(result);
+    });
+
+    // get all users
+    app.get("/users", async (req, res) => {
+      const result = await userCollections.find().toArray();
+      res.send(result);
+    });
+
+    // get user by email
+    app.get("/users/:email", async (req, res) => {
+      const { email } = req.params;
+
+      const query = { email: email };
+      const result = await userCollections.findOne(query);
+      res.send(result);
+      console.log(result);
+    });
 
     // post or save product data
     app.post("/add-product-form", async (req, res) => {
@@ -57,6 +84,32 @@ async function run() {
       const { email } = req.query;
       const query = { email: email };
       const result = await productList.find(query).toArray();
+      res.send(result);
+    });
+
+    // post or pet data
+    app.post("/pets", async (req, res) => {
+      const data = req.body;
+      const date = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+      data.createdAt = date;
+      console.log(data);
+      const result = await pets.insertOne(data);
+      res.send(result);
+    });
+
+    // get pet data
+    app.get("/pets", async (req, res) => {
+      const result = await pets.find().toArray();
+      res.send(result);
+    });
+
+    // get single data from collection
+    app.get("/pets-details/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+
+      const query = { _id: new ObjectId(id) };
+      const result = await pets.findOne(query);
       res.send(result);
     });
 
